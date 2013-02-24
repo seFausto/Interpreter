@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.*;
 
 public class Frame extends JFrame {
@@ -14,6 +17,7 @@ public class Frame extends JFrame {
 	JTextField cellG = new JTextField();
 	JTextField cellH = new JTextField();
 	JTextField cellI = new JTextField();
+	JLabel lblResult;
 	
 	int _startingX=500;
 	int _startingY=500;
@@ -24,7 +28,7 @@ public class Frame extends JFrame {
 	
 	Frame() {
 
-		super("My Simple Frame");
+		super("Interpreter");
 		setBounds(_startingX, _startingY, _width, _height);	
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,31 +59,51 @@ public class Frame extends JFrame {
 		
 		pane.add(cellA);
 		pane.add(cellB);
-		pane.add(cellG);
 		pane.add(cellC);
-		pane.add(cellH);
 		pane.add(cellD);
-		pane.add(cellI);
 		pane.add(cellE);
 		pane.add(cellF);
+		pane.add(cellG);
+		pane.add(cellH);
+		pane.add(cellI);
 		
 		
 		//Buttons
 		JButton btnCalculate = new JButton("Calculate");
-		//btnCalculate.addActionListener(arg0);
+		btnCalculate.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				calculate();
+				
+			}
+
+			private void calculate() {
+				String expression ="A B " + cellC.getText();
+				
+				Evaluator sentence = new Evaluator(expression);
+				
+				Map<String, Expression> variables = new HashMap<String, Expression>();
+				
+				variables.put("A", new Number(Double.parseDouble(cellA.getText())));
+				variables.put("B", new Number(Double.parseDouble(cellB.getText())));
+				
+				double result = sentence.interpret(variables);
+				
+				lblResult.setText("Result: " + result);
+			}
+		});
+		
 		pane.add(btnCalculate);
 		
 		
-		JLabel lblResult = new JLabel("Result will show here");
-		
+		lblResult = new JLabel("Result will show here");
+		lblResult.setMaximumSize(new Dimension(1000,500));
 		pane.add(lblResult);
 		
 		setVisible(true);
 
 	}
-	
-	public void calculate(){
-	
-	}
+
 
 }
