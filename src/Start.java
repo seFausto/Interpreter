@@ -1,5 +1,25 @@
+import java.util.Map;
+import java.util.HashMap;
+
 public class Start {
 	public static void main(String args[]) {
-		System.out.print("test");
+		String expression = "A B + C sin *";
+		
+		Evaluator sentence = new Evaluator(expression);
+		
+		Map<String, Expression> variables = new HashMap<String, Expression>();
+		
+		variables.put("A", new Number(1));
+		variables.put("B", new Number(2));
+		variables.put("C", new Number(3));
+	
+		
+		double result = sentence.interpret(variables);
+		
+		System.out.println(result);
+		
+		
+		new Frame();
+	
 	}
 }

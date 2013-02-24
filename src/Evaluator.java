@@ -40,16 +40,16 @@ public class Evaluator implements Expression {
 			} else if (token.equals("cos")) {
 				Expression subExpression = new Cos(expressionStack.pop());
 				expressionStack.push(subExpression);
-			} else if (token.equals("Log2")) {
+			} else if (token.equals("log2")) {
 				Expression subExpression = new Log2(expressionStack.pop());
 				expressionStack.push(subExpression);
 			} else {
 				expressionStack.push(new Variable(token));
 
 			}
-
-			syntaxTree = expressionStack.pop();
 		}
+		
+		syntaxTree = expressionStack.pop();
 
 	}
 
