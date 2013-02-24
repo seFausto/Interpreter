@@ -18,45 +18,45 @@ public class Frame extends JFrame {
 	JTextField cellH = new JTextField();
 	JTextField cellI = new JTextField();
 	JLabel lblResult;
-	
-	int _startingX=500;
-	int _startingY=500;
-	int _width=1000;
-	int _height= 500;
-	
-	Dimension _defaultTextBoxDimension = new Dimension(100,30);
-	
+
+	int _startingX = 500;
+	int _startingY = 500;
+	int _width = 1000;
+	int _height = 500;
+
+	Dimension _defaultTextBoxDimension = new Dimension(100, 30);
+
 	Frame() {
 
 		super("Interpreter");
-		setBounds(_startingX, _startingY, _width, _height);	
-		
+		setBounds(_startingX, _startingY, _width, _height);
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		Container con = this.getContentPane();
-		
+
 		con.add(pane);
-		
-		//Text boxes
-		
+
+		// Text boxes
+
 		cellA.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellB.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellC.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellD.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellE.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellF.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellG.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellH.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		cellI.setPreferredSize(_defaultTextBoxDimension);
-		
+
 		pane.add(cellA);
 		pane.add(cellB);
 		pane.add(cellC);
@@ -66,44 +66,97 @@ public class Frame extends JFrame {
 		pane.add(cellG);
 		pane.add(cellH);
 		pane.add(cellI);
-		
-		
-		//Buttons
+
+		// Buttons
 		JButton btnCalculate = new JButton("Calculate");
-		btnCalculate.addActionListener( new ActionListener() {
-			
+		btnCalculate.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				calculate();
-				
 			}
 
 			private void calculate() {
-				String expression ="A B " + cellC.getText();
+				String expression = cellA.getText() + " " + cellB.getText()
+						+ " " + cellC.getText();
+
 				
-				Evaluator sentence = new Evaluator(expression);
+				if (isValidExpression(expression.trim()))
+				{
+					lblResult.setText("Result: " + expression);
+					
+				}
+				else
+				{
+					lblResult.setText("Result: not good");
+				}
 				
-				Map<String, Expression> variables = new HashMap<String, Expression>();
+				// Evaluator sentence = new Evaluator(expression);
+				/*
+				 * Map<String, Expression> variables = new HashMap<String,
+				 * Expression>();
+				 * 
+				 * variables.put("A", new
+				 * Number(Double.parseDouble(cellA.getText())));
+				 * variables.put("B", new
+				 * Number(Double.parseDouble(cellB.getText())));
+				 * 
+				 * double result = sentence.interpret(variables);
+				 */
+
+			
+			}
+
+			private Boolean isValidExpression(String value) {
+				Boolean result = true;
+
+				for (String token : value.split(" ")){
+					
+					if (!isNumber(token) && !isOperation(token))
+					{
+						result = false;
+						break;
+					}
+				}
 				
-				variables.put("A", new Number(Double.parseDouble(cellA.getText())));
-				variables.put("B", new Number(Double.parseDouble(cellB.getText())));
+				return result;
+
+			}
+
+			private Boolean isNumber(String value) {
 				
-				double result = sentence.interpret(variables);
+				try {
+					Double.parseDouble(value);
+				} catch (NumberFormatException e) {
+					return false;
+				}
 				
-				lblResult.setText("Result: " + result);
+				return true;
+
+			}
+
+			private Boolean isOperation(String value) {
+				Boolean result = false;
+
+				if (value.equals("+") || value.equals("-") || value.equals("*")
+						|| value.equals("/") || value.equals("log2")
+						|| value.equals("sin") || value.equals("cos")) {
+					result = true;
+				}
+
+				return result;
+
 			}
 		});
-		
+
 		pane.add(btnCalculate);
-		
-		
+
 		lblResult = new JLabel("Result will show here");
-		lblResult.setMaximumSize(new Dimension(1000,500));
+		lblResult.setMaximumSize(new Dimension(1000, 500));
 		pane.add(lblResult);
-		
+
 		setVisible(true);
 
 	}
-
 
 }
