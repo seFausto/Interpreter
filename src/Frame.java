@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 
@@ -77,60 +78,86 @@ public class Frame extends JFrame {
 			}
 
 			private void calculate() {
-				String expression = cellA.getText() + " " + cellB.getText()
-						+ " " + cellC.getText();
+
+				// if (isValidExpression(expression.trim())) {
+				// lblResult.setText("Result: " + expression);
+				//
+				// } else {
+				// lblResult.setText("Result: not good");
+				// }
+
+				// Loop for each cell
+
+				// Create new expression string
+				String expression = cellA.getText();
+
+				//Hash map with values to use in interpret function
+				Map<String, Expression> variables = new HashMap<String, Expression>();
 
 				
-				if (isValidExpression(expression.trim()))
-				{
-					lblResult.setText("Result: " + expression);
+				// Loop through the whole string
+				while (expression == "" && expression.contains("$")) {
 					
+					for (String token : expression.split(" ")) {
+						// New function: Replace references with value from that
+						// cell
+						// Add a letter for each Number (use string value of 65,
+						// 66, etc
+						// Save it to the new string
+					}
 				}
-				else
-				{
-					lblResult.setText("Result: not good");
-				}
-				
-				// Evaluator sentence = new Evaluator(expression);
-				/*
-				 * Map<String, Expression> variables = new HashMap<String,
-				 * Expression>();
-				 * 
-				 * variables.put("A", new
-				 * Number(Double.parseDouble(cellA.getText())));
-				 * variables.put("B", new
-				 * Number(Double.parseDouble(cellB.getText())));
-				 * 
-				 * double result = sentence.interpret(variables);
-				 */
+				// Send this expression to the Evaluator
+				Evaluator sentence = new Evaluator(expression);
 
-			
+				// Loop to add each value for every letter
+				variables.put("A",
+						new Number(Double.parseDouble(cellA.getText())));
+				variables.put("B",
+						new Number(Double.parseDouble(cellB.getText())));
+
+				// Call the interpret function
+				double result = sentence.interpret(variables);
+
+				// Save result to result Cell (or wherever)
+
+			}
+
+			private Boolean isValidReference(String value) {
+				Boolean result = true;
+
+				for (String token : value.split(" ")) {
+					if (!token.startsWith("$")) {
+						result = false;
+					}
+				}
+
+				return result;
 			}
 
 			private Boolean isValidExpression(String value) {
 				Boolean result = true;
 
-				for (String token : value.split(" ")){
-					
-					if (!isNumber(token) && !isOperation(token))
-					{
+				for (String token : value.split(" ")) {
+
+					if (!isNumber(token) && !isOperation(token)
+							&& !isValidReference(token)) {
 						result = false;
 						break;
 					}
 				}
-				
+
 				return result;
 
 			}
 
 			private Boolean isNumber(String value) {
-				
+
 				try {
 					Double.parseDouble(value);
 				} catch (NumberFormatException e) {
 					return false;
 				}
-				
+
 				return true;
 
 			}
