@@ -8,6 +8,8 @@ import javax.swing.*;
 
 public class Frame extends JFrame {
 
+	final int _ARepresentedInInt = 65;
+
 	JPanel pane = new JPanel();
 	JTextField cellA = new JTextField();
 	JTextField cellB = new JTextField();
@@ -79,6 +81,9 @@ public class Frame extends JFrame {
 
 			private void calculate() {
 
+				// Hash map with values to use in interpret function
+				Map<String, Expression> variables = new HashMap<String, Expression>();
+
 				// if (isValidExpression(expression.trim())) {
 				// lblResult.setText("Result: " + expression);
 				//
@@ -86,40 +91,86 @@ public class Frame extends JFrame {
 				// lblResult.setText("Result: not good");
 				// }
 
-				// Loop for each cell
-
 				// Create new expression string
-				String expression = cellA.getText();
+				String expression = "";
+				String cellContents = cellA.getText();
 
-				//Hash map with values to use in interpret function
-				Map<String, Expression> variables = new HashMap<String, Expression>();
+				int letterCount = 0;
 
-				
 				// Loop through the whole string
-				while (expression == "" && expression.contains("$")) {
-					
-					for (String token : expression.split(" ")) {
-						// New function: Replace references with value from that
-						// cell
-						// Add a letter for each Number (use string value of 65,
-						// 66, etc
-						// Save it to the new string
+				while (expression == "" || expression.contains("$")) {
+					expression = "";
+					for (String token : cellContents.split(" ")) {
+
+						if (token.substring(0, 1).matches("[A-Za-z]")) {
+							expression += " " + token;
+							continue;
+						}
+
+						if (isValidReference(token)) {
+							// Replace references with value from
+							String referenceContent = getValueFromCell(token);
+							if (isNumber(referenceContent)
+									|| isOperation(referenceContent)) {
+								token = referenceContent;
+							} else {
+								expression += " " + referenceContent;
+							}
+						}
+
+						if (isOperation(token)) {
+							expression += " " + token;
+						}
+
+						if (isNumber(token)) {
+							char ch = (char) (_ARepresentedInInt + letterCount);
+							String s = Character.toString(ch);
+
+							variables.put(s,
+									new Number(Double.parseDouble(token)));
+
+							expression += " " + s;
+
+							letterCount++;
+						}
+
 					}
+					cellContents = expression.trim();
 				}
 				// Send this expression to the Evaluator
 				Evaluator sentence = new Evaluator(expression);
 
-				// Loop to add each value for every letter
-				variables.put("A",
-						new Number(Double.parseDouble(cellA.getText())));
-				variables.put("B",
-						new Number(Double.parseDouble(cellB.getText())));
-
 				// Call the interpret function
 				double result = sentence.interpret(variables);
 
-				// Save result to result Cell (or wherever)
+				// Show result to result Cell (or wherever)
 
+			}
+
+			private String getValueFromCell(String token) {
+				String result = "";
+
+				if (token.equals("$A")) {
+					result = cellA.getText();
+				} else if (token.equals("$B")) {
+					result = cellB.getText();
+				} else if (token.equals("$C")) {
+					result = cellC.getText();
+				} else if (token.equals("$D")) {
+					result = cellD.getText();
+				} else if (token.equals("$E")) {
+					result = cellE.getText();
+				} else if (token.equals("$F")) {
+					result = cellF.getText();
+				} else if (token.equals("$G")) {
+					result = cellG.getText();
+				} else if (token.equals("$H")) {
+					result = cellH.getText();
+				} else if (token.equals("$I")) {
+					result = cellI.getText();
+				}
+
+				return result;
 			}
 
 			private Boolean isValidReference(String value) {
