@@ -1,9 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
+import java.util.List;
 import javax.swing.*;
 
 public class Frame extends JFrame {
@@ -122,10 +123,14 @@ public class Frame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				calculate();
+				try {
+					calculate();
+				} catch (Exception e) {
+					// throw error
+				}
 			}
 
-			private void calculate() {
+			private void calculate() throws Exception {
 
 				// Hash map with values to use in interpret function
 				Map<String, Expression> variables = new HashMap<String, Expression>();
@@ -134,42 +139,54 @@ public class Frame extends JFrame {
 				JTextField resultCell;
 
 				// Loop through all cells
+				List<String> references = new ArrayList<String>();
 
 				for (int i = 0; i < _NumberOfCells; i++) {
+					references = new ArrayList<String>();
+
 					switch (i) {
 					case 0:
+						references.add("$A");
 						cell = cellA;
 						resultCell = resultA;
 						break;
 					case 1:
+						references.add("$B");
 						cell = cellB;
 						resultCell = resultB;
 						break;
 					case 2:
+						references.add("$C");
 						cell = cellC;
 						resultCell = resultC;
 						break;
 					case 3:
+						references.add("$D");
 						cell = cellD;
 						resultCell = resultD;
 						break;
 					case 4:
+						references.add("$E");
 						cell = cellE;
 						resultCell = resultE;
 						break;
 					case 5:
+						references.add("$F");
 						cell = cellF;
 						resultCell = resultF;
 						break;
 					case 6:
+						references.add("$G");
 						cell = cellG;
 						resultCell = resultG;
 						break;
 					case 7:
+						references.add("$H");
 						cell = cellH;
 						resultCell = resultH;
 						break;
 					case 8:
+						references.add("$I");
 						cell = cellI;
 						resultCell = resultI;
 						break;
@@ -184,8 +201,8 @@ public class Frame extends JFrame {
 
 					if (cellContents.length() > 0) {
 						// Loop through the whole string
-						while (expression == ""
-								|| expression.matches("[0-9\\$]")) {
+						while (expression == "" || expression.contains("$")
+								|| expression.matches(".*\\d.*")) {
 							expression = "";
 							for (String token : cellContents.split(" ")) {
 
@@ -195,14 +212,21 @@ public class Frame extends JFrame {
 								}
 
 								if (isValidReference(token)) {
+									if (references.contains(token)) {
+										expression = "Error";
+										break;
+
+									}
 									// Replace references with value from
 									String referenceContent = getValueFromCell(token);
+
 									if (isNumber(referenceContent)
 											|| isOperation(referenceContent)) {
 										token = referenceContent;
 									} else {
 										expression += " " + referenceContent;
 									}
+									references.add(token);
 								}
 
 								if (isOperation(token)) {
@@ -226,14 +250,18 @@ public class Frame extends JFrame {
 							}
 							cellContents = expression.trim();
 						}
-						
-					
-						// Send this expression to the Evaluator
-						Evaluator sentence = new Evaluator(expression);
-						// Call the interpret function
-						double result = sentence.interpret(variables);
-						// Show result to result Cell (or wherever)
-						resultCell.setText(String.valueOf(result));
+
+						if (!expression.equals("Error")) {
+							// Send this expression to the Evaluator
+							Evaluator sentence = new Evaluator(expression);
+							// Call the interpret function
+							double result = sentence.interpret(variables);
+							// Show result to result Cell (or wherever)
+							resultCell.setText(String.valueOf(result));
+						} else {
+							resultCell.setText("Circula Reference");
+
+						}
 					}
 
 				}
@@ -263,6 +291,9 @@ public class Frame extends JFrame {
 					result = cellI.getText();
 				}
 
+				if (result.trim().length() == 0) {
+					result = "0";
+				}
 				return result;
 			}
 
@@ -280,9 +311,9 @@ public class Frame extends JFrame {
 
 			private Boolean isValidExpression(String value) {
 				Boolean result = true;
-				
+
 				value.matches("");
-				
+
 				return result;
 
 			}
