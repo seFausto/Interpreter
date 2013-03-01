@@ -133,7 +133,7 @@ public class Frame extends JFrame {
 			private void calculate() throws Exception {
 
 				// Hash map with values to use in interpret function
-				Map<String, Expression> variables = new HashMap<String, Expression>();
+				Map<String, IExpression> variables = new HashMap<String, IExpression>();
 
 				JTextField cell;
 				JTextField resultCell;
