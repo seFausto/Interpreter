@@ -1,7 +1,7 @@
 import java.util.Map;
 
 
-public class Variable implements Expression{
+public class Variable implements IExpression{
 
 	private String name;
 
@@ -11,7 +11,7 @@ public class Variable implements Expression{
 	
 	
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		if (variables.get(this.name) == null)
 			return 0;
 		else

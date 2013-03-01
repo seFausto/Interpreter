@@ -1,16 +1,16 @@
 import java.util.Map;
 
-public class Cos implements Expression {
+public class Cos implements IExpression {
 
-	Expression operand;
+	IExpression operand;
 
-	public Cos(Expression op) {
+	public Cos(IExpression op) {
 		operand = op;
 
 	}
 
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		return Math.cos(operand.interpret(variables));
 	}
 

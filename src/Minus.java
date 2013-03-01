@@ -1,18 +1,18 @@
 import java.util.Map;
 
-public class Minus implements Expression {
+public class Minus implements IExpression {
 
-	Expression leftOperand;
-	Expression rightOperand;
+	IExpression leftOperand;
+	IExpression rightOperand;
 
-	public Minus(Expression left, Expression right) {
+	public Minus(IExpression left, IExpression right) {
 		leftOperand = left;
 		rightOperand = right;
 
 	}
 
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		return leftOperand.interpret(variables)
 				- rightOperand.interpret(variables);
 	}

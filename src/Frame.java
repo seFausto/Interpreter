@@ -121,149 +121,147 @@ public class Frame extends JFrame {
 		JButton btnCalculate = new JButton("Calculate");
 		btnCalculate.addActionListener(new ActionListener() {
 
+			List<String> references = new ArrayList<String>();
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					calculate();
+					JTextField cell;
+					JTextField resultCell;
+
+					for (int i = 0; i < _NumberOfCells; i++) {
+						references = new ArrayList<String>();
+
+						switch (i) {
+						case 0:
+							references.add("$A");
+							cell = cellA;
+							resultCell = resultA;
+							break;
+						case 1:
+							references.add("$B");
+							cell = cellB;
+							resultCell = resultB;
+							break;
+						case 2:
+							references.add("$C");
+							cell = cellC;
+							resultCell = resultC;
+							break;
+						case 3:
+							references.add("$D");
+							cell = cellD;
+							resultCell = resultD;
+							break;
+						case 4:
+							references.add("$E");
+							cell = cellE;
+							resultCell = resultE;
+							break;
+						case 5:
+							references.add("$F");
+							cell = cellF;
+							resultCell = resultF;
+							break;
+						case 6:
+							references.add("$G");
+							cell = cellG;
+							resultCell = resultG;
+							break;
+						case 7:
+							references.add("$H");
+							cell = cellH;
+							resultCell = resultH;
+							break;
+						case 8:
+							references.add("$I");
+							cell = cellI;
+							resultCell = resultI;
+							break;
+						default:
+							cell = new JTextField();
+							resultCell = new JTextField();
+						}
+
+						calculate(cell, resultCell);
+					}
 				} catch (Exception e) {
 					// throw error
 				}
 			}
 
-			private void calculate() throws Exception {
+			private void calculate(JTextField contentCell, JTextField resultCell)
+					throws Exception {
 
 				// Hash map with values to use in interpret function
 				Map<String, IExpression> variables = new HashMap<String, IExpression>();
 
-				JTextField cell;
-				JTextField resultCell;
+				// Create new expression string
+				String expression = "";
+				String cellContents = contentCell.getText().trim();
+				int letterCount = 0;
 
-				// Loop through all cells
-				List<String> references = new ArrayList<String>();
+				if (cellContents.length() > 0) {
+					// Loop through the whole string
+					while (expression == "" || expression.contains("$")
+							|| expression.matches(".*\\d.*")) {
+						expression = "";
+						for (String token : cellContents.split(" ")) {
 
-				for (int i = 0; i < _NumberOfCells; i++) {
-					references = new ArrayList<String>();
-
-					switch (i) {
-					case 0:
-						references.add("$A");
-						cell = cellA;
-						resultCell = resultA;
-						break;
-					case 1:
-						references.add("$B");
-						cell = cellB;
-						resultCell = resultB;
-						break;
-					case 2:
-						references.add("$C");
-						cell = cellC;
-						resultCell = resultC;
-						break;
-					case 3:
-						references.add("$D");
-						cell = cellD;
-						resultCell = resultD;
-						break;
-					case 4:
-						references.add("$E");
-						cell = cellE;
-						resultCell = resultE;
-						break;
-					case 5:
-						references.add("$F");
-						cell = cellF;
-						resultCell = resultF;
-						break;
-					case 6:
-						references.add("$G");
-						cell = cellG;
-						resultCell = resultG;
-						break;
-					case 7:
-						references.add("$H");
-						cell = cellH;
-						resultCell = resultH;
-						break;
-					case 8:
-						references.add("$I");
-						cell = cellI;
-						resultCell = resultI;
-						break;
-					default:
-						cell = new JTextField();
-						resultCell = new JTextField();
-					}
-					// Create new expression string
-					String expression = "";
-					String cellContents = cell.getText().trim();
-					int letterCount = 0;
-
-					if (cellContents.length() > 0) {
-						// Loop through the whole string
-						while (expression == "" || expression.contains("$")
-								|| expression.matches(".*\\d.*")) {
-							expression = "";
-							for (String token : cellContents.split(" ")) {
-
-								if (token.substring(0, 1).matches("[A-Za-z]")) {
-									expression += " " + token;
-									continue;
-								}
-
-								if (isValidReference(token)) {
-									if (references.contains(token)) {
-										expression = "Error";
-										break;
-
-									}
-									// Replace references with value from
-									String referenceContent = getValueFromCell(token);
-
-									if (isNumber(referenceContent)
-											|| isOperation(referenceContent)) {
-										token = referenceContent;
-									} else {
-										expression += " " + referenceContent;
-									}
-									references.add(token);
-								}
-
-								if (isOperation(token)) {
-									expression += " " + token;
-								}
-
-								if (isNumber(token)) {
-									char ch = (char) (_ARepresentedInInt + letterCount);
-									String s = Character.toString(ch);
-
-									variables.put(
-											s,
-											new Number(Double
-													.parseDouble(token)));
-
-									expression += " " + s;
-
-									letterCount++;
-								}
-
+							if (token.substring(0, 1).matches("[A-Za-z]")) {
+								expression += " " + token;
+								continue;
 							}
-							cellContents = expression.trim();
-						}
 
-						if (!expression.equals("Error")) {
-							// Send this expression to the Evaluator
-							Evaluator sentence = new Evaluator(expression);
-							// Call the interpret function
-							double result = sentence.interpret(variables);
-							// Show result to result Cell (or wherever)
-							resultCell.setText(String.valueOf(result));
-						} else {
-							resultCell.setText("Circula Reference");
+							if (isValidReference(token)) {
+								if (references.contains(token)) {
+									expression = "Error";
+									break;
+
+								}
+								// Replace references with value from
+								String referenceContent = getValueFromCell(token);
+
+								if (isNumber(referenceContent)
+										|| isOperation(referenceContent)) {
+									token = referenceContent;
+								} else {
+									expression += " " + referenceContent;
+								}
+								references.add(token);
+							}
+
+							if (isOperation(token)) {
+								expression += " " + token;
+							}
+
+							if (isNumber(token)) {
+								char ch = (char) (_ARepresentedInInt + letterCount);
+								String s = Character.toString(ch);
+
+								variables.put(s,
+										new Number(Double.parseDouble(token)));
+
+								expression += " " + s;
+
+								letterCount++;
+							}
 
 						}
+						cellContents = expression.trim();
 					}
 
+					if (!expression.equals("Error")) {
+						// Send this expression to the Evaluator
+						Evaluator sentence = new Evaluator(expression);
+						// Call the interpret function
+						double result = sentence.interpret(variables);
+						// Show result to result Cell (or wherever)
+						resultCell.setText(String.valueOf(result));
+					} else {
+						resultCell.setText("Circula Reference");
+
+					}
 				}
 
 			}

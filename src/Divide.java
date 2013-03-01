@@ -1,17 +1,17 @@
 import java.util.Map;
 
-public class Divide implements Expression {
+public class Divide implements IExpression {
 
-	Expression leftOperand;
-	Expression rightOperand;
+	IExpression leftOperand;
+	IExpression rightOperand;
 
-	public Divide(Expression left, Expression right) {
+	public Divide(IExpression left, IExpression right) {
 		leftOperand = left;
 		rightOperand = right;
 	}
 
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		return leftOperand.interpret(variables)
 				/ rightOperand.interpret(variables);
 	}

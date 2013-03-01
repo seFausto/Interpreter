@@ -1,47 +1,47 @@
 import java.util.Map;
 import java.util.Stack;
 
-public class Evaluator implements Expression {
+public class Evaluator implements IExpression {
 
-	private Expression syntaxTree;
+	private IExpression syntaxTree;
 
 	public Evaluator(String expression) {
-		Stack<Expression> expressionStack = new Stack<Expression>();
+		Stack<IExpression> expressionStack = new Stack<IExpression>();
 
 		for (String token : expression.split(" ")) {
 			if (token.equals("+")) {
 				// We don't care the order in which this operates
-				Expression subExpression = new Plus(expressionStack.pop(),
+				IExpression subExpression = new Plus(expressionStack.pop(),
 						expressionStack.pop());
 				expressionStack.push(subExpression);
 			} else if (token.equals("-")) {
 				// since we do care the order on the minus operation
 				// we pop the right part of the expression first
-				Expression right = expressionStack.pop();
+				IExpression right = expressionStack.pop();
 				// then the left
-				Expression left = expressionStack.pop();
+				IExpression left = expressionStack.pop();
 
-				Expression subExpression = new Minus(left, right);
+				IExpression subExpression = new Minus(left, right);
 				expressionStack.push(subExpression);
 			} else if (token.equals("*")) {
-				Expression subExpression = new Multiply(expressionStack.pop(),
+				IExpression subExpression = new Multiply(expressionStack.pop(),
 						expressionStack.pop());
 				expressionStack.push(subExpression);
 			} else if (token.equals("/")) {
-				Expression right = expressionStack.pop();
-				Expression left = expressionStack.pop();
+				IExpression right = expressionStack.pop();
+				IExpression left = expressionStack.pop();
 
-				Expression subExpression = new Divide(left, right);
+				IExpression subExpression = new Divide(left, right);
 				expressionStack.push(subExpression);
 			} else if (token.equals("sin")) {
-				Expression subExpression = new Sin(expressionStack.pop());
+				IExpression subExpression = new Sin(expressionStack.pop());
 				expressionStack.push(subExpression);
 
 			} else if (token.equals("cos")) {
-				Expression subExpression = new Cos(expressionStack.pop());
+				IExpression subExpression = new Cos(expressionStack.pop());
 				expressionStack.push(subExpression);
 			} else if (token.equals("log2")) {
-				Expression subExpression = new Log2(expressionStack.pop());
+				IExpression subExpression = new Log2(expressionStack.pop());
 				expressionStack.push(subExpression);
 			} else {
 				expressionStack.push(new Variable(token));
@@ -54,7 +54,7 @@ public class Evaluator implements Expression {
 	}
 
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		return syntaxTree.interpret(variables);
 	}
 

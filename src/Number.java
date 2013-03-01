@@ -1,6 +1,6 @@
 import java.util.Map;
 
-public class Number implements Expression {
+public class Number implements IExpression {
 
 	private double number;
 
@@ -9,7 +9,7 @@ public class Number implements Expression {
 	}
 
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		return this.number;
 	}
 

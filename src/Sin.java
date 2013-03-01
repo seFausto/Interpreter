@@ -1,16 +1,16 @@
 import java.util.Map;
 
-public class Sin implements Expression {
+public class Sin implements IExpression {
 
-	Expression operand;
+	IExpression operand;
 
-	public Sin(Expression op) {
+	public Sin(IExpression op) {
 		operand = op;
 
 	}
 
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		return Math.sin(operand.interpret(variables));
 	}
 

@@ -7,7 +7,7 @@ public class Start {
 		
 		Evaluator sentence = new Evaluator(expression);
 		
-		Map<String, Expression> variables = new HashMap<String, Expression>();
+		Map<String, IExpression> variables = new HashMap<String, IExpression>();
 		
 		variables.put("A", new Number(1.4));
 		variables.put("B", new Number(2.3));

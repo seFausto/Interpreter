@@ -1,16 +1,16 @@
 import java.util.Map;
 
-public class Log2 implements Expression {
+public class Log2 implements IExpression {
 
-	Expression operand;
+	IExpression operand;
 
-	public Log2(Expression op) {
+	public Log2(IExpression op) {
 		operand = op;
 
 	}
 
 	@Override
-	public double interpret(Map<String, Expression> variables) {
+	public double interpret(Map<String, IExpression> variables) {
 		return Math.log(operand.interpret(variables)) / Math.log(2);
 	}
 
