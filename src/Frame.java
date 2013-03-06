@@ -3,11 +3,48 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class Frame extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+
+	private final class SaveState implements KeyListener {
+		public void saveFrameValues() {
+			FrameValues newFrame = new FrameValues();
+
+			newFrame.cellA = ((Frame) Frame.getFrames()[0]).cellA.getText();
+			newFrame.cellB = ((Frame) Frame.getFrames()[0]).cellB.getText();
+			newFrame.cellC = ((Frame) Frame.getFrames()[0]).cellC.getText();
+			newFrame.cellD = ((Frame) Frame.getFrames()[0]).cellD.getText();
+			newFrame.cellE = ((Frame) Frame.getFrames()[0]).cellE.getText();
+			newFrame.cellF = ((Frame) Frame.getFrames()[0]).cellF.getText();
+			newFrame.cellG = ((Frame) Frame.getFrames()[0]).cellG.getText();
+			newFrame.cellH = ((Frame) Frame.getFrames()[0]).cellH.getText();
+			newFrame.cellI = ((Frame) Frame.getFrames()[0]).cellI.getText();
+
+			UndoHistory.undoHistory.add(newFrame);
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+
+		}
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+			saveFrameValues();
+
+		}
+	}
 
 	private final class ExpressionProcessor implements ActionListener {
 		List<String> references = new ArrayList<String>();
@@ -196,15 +233,6 @@ public class Frame extends JFrame {
 			return result;
 		}
 
-		private Boolean isValidExpression(String value) {
-			Boolean result = true;
-
-			value.matches("");
-
-			return result;
-
-		}
-
 		private Boolean isNumber(String value) {
 
 			try {
@@ -234,15 +262,15 @@ public class Frame extends JFrame {
 	final int _ARepresentedInInt = 65;
 
 	JPanel pane = new JPanel();
-	JTextField cellB = new JTextField();
-	JTextField cellC = new JTextField();
-	JTextField cellD = new JTextField();
-	JTextField cellE = new JTextField();
-	JTextField cellF = new JTextField();
-	JTextField cellG = new JTextField();
-	JTextField cellA = new JTextField();
-	JTextField cellH = new JTextField();
-	JTextField cellI = new JTextField();
+	public JTextField cellB = new JTextField();
+	public JTextField cellC = new JTextField();
+	public JTextField cellD = new JTextField();
+	public JTextField cellE = new JTextField();
+	public JTextField cellF = new JTextField();
+	public JTextField cellG = new JTextField();
+	public JTextField cellA = new JTextField();
+	public JTextField cellH = new JTextField();
+	public JTextField cellI = new JTextField();
 
 	JTextField resultA = new JTextField();
 	JTextField resultB = new JTextField();
@@ -264,6 +292,10 @@ public class Frame extends JFrame {
 
 	Dimension _defaultTextBoxDimension = new Dimension(100, 30);
 
+	public void saveState() {
+
+	}
+
 	Frame() {
 
 		super("Interpreter");
@@ -278,22 +310,31 @@ public class Frame extends JFrame {
 		// Text boxes
 
 		cellA.setPreferredSize(_defaultTextBoxDimension);
+		cellA.addKeyListener(new SaveState());
 
 		cellB.setPreferredSize(_defaultTextBoxDimension);
+		cellB.addKeyListener(new SaveState());
 
 		cellC.setPreferredSize(_defaultTextBoxDimension);
+		cellC.addKeyListener(new SaveState());
 
 		cellD.setPreferredSize(_defaultTextBoxDimension);
+		cellD.addKeyListener(new SaveState());
 
 		cellE.setPreferredSize(_defaultTextBoxDimension);
+		cellE.addKeyListener(new SaveState());
 
 		cellF.setPreferredSize(_defaultTextBoxDimension);
+		cellF.addKeyListener(new SaveState());
 
 		cellG.setPreferredSize(_defaultTextBoxDimension);
+		cellG.addKeyListener(new SaveState());
 
 		cellH.setPreferredSize(_defaultTextBoxDimension);
+		cellH.addKeyListener(new SaveState());
 
 		cellI.setPreferredSize(_defaultTextBoxDimension);
+		cellI.addKeyListener(new SaveState());
 
 		pane.add(cellA);
 		pane.add(cellB);
@@ -304,12 +345,6 @@ public class Frame extends JFrame {
 		pane.add(cellG);
 		pane.add(cellH);
 		pane.add(cellI);
-
-		// lblResult = new JLabel("Result will show here");
-		// lblResult.setMaximumSize(new Dimension(1000, 500));
-		// lblResult.setSize(1000,500);
-
-		// pane.add(lblResult);
 
 		resultA.setPreferredSize(_defaultTextBoxDimension);
 
@@ -345,8 +380,54 @@ public class Frame extends JFrame {
 
 		pane.add(btnCalculate);
 
+		JButton btnRecallState = new JButton("Undo");
+		btnRecallState.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (UndoHistory.undoHistory.size() > 0) {
+					setFrameValues();
+					UndoHistory.undoHistory.remove(UndoHistory.undoHistory
+							.size() - 1);
+				}
+
+			}
+
+			public void setFrameValues() {
+				((Frame) Frame.getFrames()[0]).cellA
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellA);
+				((Frame) Frame.getFrames()[0]).cellB
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellB);
+				((Frame) Frame.getFrames()[0]).cellC
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellC);
+				((Frame) Frame.getFrames()[0]).cellD
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellD);
+				((Frame) Frame.getFrames()[0]).cellE
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellE);
+				((Frame) Frame.getFrames()[0]).cellF
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellF);
+				((Frame) Frame.getFrames()[0]).cellG
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellG);
+				((Frame) Frame.getFrames()[0]).cellH
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellH);
+				((Frame) Frame.getFrames()[0]).cellI
+						.setText(UndoHistory.undoHistory
+								.get(UndoHistory.undoHistory.size() - 1).cellI);
+
+			}
+		});
+
+		pane.add(btnRecallState);
+
 		setVisible(true);
 
 	}
-
 }
